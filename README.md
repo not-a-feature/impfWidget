@@ -12,6 +12,8 @@ Sie ist weder mit der 116/117 noch mit der offiziellen Impfterminvergabe unter i
 Das ursprüngliche Grundgerüst stammt von marco79cgn und seinem Klopapier Widget.
 https://gist.github.com/marco79cgn/23ce08fd8711ee893a3be12d4543f2d2
 
+Die gist Version des Repos findet sich hier: https://gist.github.com/not-a-feature/4e6dbbd9eb3bd927e50cae347b7e0486
+
 ## Anforderungen und Installation
 - iOS 14
 - [Scriptable](https://apps.apple.com/us/app/scriptable/id1405459188) version 1.5 (oder neuer)
