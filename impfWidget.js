@@ -1,6 +1,6 @@
 /* 
 Impftermin Widget
-v1.2.2
+v1.2.3
 
 This Scriptable Widget will show you if there are any vaccination appointments available in your local vaccination centre.
 The data is pulled from the impfterminservice.de api, which is neither publicly available nor documented.
@@ -282,7 +282,7 @@ async function getImage(image) {
         let imageUrl
         switch (image) {
             case 'vaccine':
-                imageUrl = "https://juleskreuer.eu/api/syringe-solid.png"
+                imageUrl = "https://api.juleskreuer.eu/syringe-solid.png"
                 break
             default:
                 console.log(`Sorry, couldn't find ${image}.`);
