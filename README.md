@@ -10,7 +10,7 @@
 
 
 ## Allgemeines
-Diese Widget, geschrieben für die Scriptable.app, zweigt an, ob es im lokalen Impfzentrum frei Termine hat.
+Diese Widget, geschrieben für die Scriptable.app, zweigt an, ob es im lokalen Impfzentrum freie Vermittlungscodes für Impftermine hat.
 Sie ist weder mit der 116/117 noch mit der offiziellen Impfterminvergabe unter impfterminservice.de verwand.
 
 Das ursprüngliche Grundgerüst stammt von marco79cgn und seinem Klopapier Widget.
@@ -30,6 +30,7 @@ Die gist Version des Repos findet sich hier: https://gist.github.com/not-a-featu
 4) Öffne https://003-iz.impfterminservice.de/assets/static/impfzentren.json
 5) Suche nach dem Zentrum in der gewünschen Stadt
 6) Kopiere die das ganze Objekt (alles zwischen den geschweiften klammern)
+
 ![screenshot1](https://user-images.githubusercontent.com/25013642/109874502-7caf2800-7c6f-11eb-97c6-9198b7b1be4d.png)
 
 7) Gehe zurück in die Scriptable App und den code an. Ersetzte alles zwischen den geschweiften Klammern mit dem kopiertem Text
