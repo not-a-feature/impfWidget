@@ -1,31 +1,29 @@
 /* 
 Impftermin Widget
-v1.2.3
+v 1.3.0
 
-This Scriptable Widget will show you if there are any vaccination appointments available in your local vaccination centre.
+This Scriptable Widget will show you if there are any "Vermittlungscode" for vaccination appointments available.
 The data is pulled from the impfterminservice.de api, which is neither publicly available nor documented.
 Therefore everything may break.
 
-The newest version of this widget can be found here: https://github.com/not-a-feature/impfWidget
+The newest version, issues, etc. of this widget can be found here: https://github.com/not-a-feature/impfWidget
 A gist version is also available: https://gist.github.com/not-a-feature/4e6dbbd9eb3bd927e50cae347b7e0486/
 
 The framework/skeleton of this script was created by marco79cgn for the toiletpaper-widget
 (https://gist.github.com/marco79cgn/23ce08fd8711ee893a3be12d4543f2d2)
 
 To uses this widget go to https://003-iz.impfterminservice.de/assets/static/impfzentren.json and search for
-your local center. Copy the "PLZ" and modify in the script below.
+your local center. Copy the whole text in between the two curly brackets and paste it below in the settings (Starting at line 55).
 
-Then change your LANDID. 
-BW              -> 0
-Hamburg         -> 1
-Hessen          -> 2
-NRW             -> 3
-Sachsen Anhalt  -> 4
+If you want a notification change the NOTIFICATION_LEVEL to 
+0: no notification
+1: only if vaccines are available
+2: every time the widget refreshes
 
 If you want to know if there are appointments specifically for a vaccine,
-set displayVaccinesAsOne to false. This requires a medium size-widget (2x1)
+set DISPLAY_VACCINES_AS_ONE to false. This requires a medium size-widget (2x1)
 
-If you want to exclude specific vaccines, set them to iside the VACCINES variable to false. 
+If you want to exclude specific vaccines, set them to inside the VACCINES variable to false. 
 
 Thats it. You can now run this script.
 Copy the source, open the scriptabel app, add the source there. 
@@ -46,21 +44,27 @@ TLDR:
 | ✓ Private use    |                              |             |
 
 Go to https://github.com/not-a-feature/impfWidget/blob/main/LICENSE to see the full version.
--------------------------------------------------------------------------------
-
-
-*/
-const bLeander = ["Baden-Württemberg", "Hamburg", "Hessen", "Nordrhein-Westfalen", "Sachsen-Anhalt"]
-
+------------------------------------------------------------------------------- */
 
 //-----------------------------------------------------------------------------
 // Settings
 
-let PLZ = "72072"   // PLZ of vaccination center
-const LANDID = 0    // 0 for BW, 1 Hamburg, 2 Hessen ...
+// Replace this with the data of you local center
+const CENTER = {
+    "Zentrumsname": "Paul Horn Arena",
+    "PLZ": "72072",
+    "Ort": "Tübingen",
+    "Bundesland": "Baden-Württemberg",
+    "URL": "https://003-iz.impfterminservice.de/",
+    "Adresse": "Europastraße  50"
+ }
+
+// adjust to your desired level
+const NOTIFICATION_LEVEL = 1
+
 // Set to true, if a detailed view is wanted.
 // Attention! This requires a medium size-widget (2x1)
-const displayVaccinesAsOne = false 
+const DISPLAY_VACCINES_AS_ONE = false 
 
 // Advanced Setting
 // Fetch status of following vaccines, set to false to ignore this vaccine
@@ -76,37 +80,43 @@ const detailTextFontSize = 17
 const textColorRed   = new Color("#E50000")
 const textColorGreen = new Color("#00CD66")
 
-let param = args.widgetParameter
-if (param != null && param.length > 0) {
-    PLZ = param
-}
 
 const widget = new ListWidget()
+widget.url = CENTER["URL"]
 const openAppointments  = await fetchOpenAppointments()
-const centerInformation = await fetchCenterInformation()
+await createNotification()
 await createWidget()
 
 if (!config.runsInWidget) {
-    await widget.presentSmall()
+    if (DISPLAY_VACCINES_AS_ONE) {
+        await widget.presentSmall()
+    }
+    else {
+        await widget.presentMedium()
+    }
 }
 Script.setWidget(widget)
 Script.complete()
 
 /* create Widget
 
-case: smallWidget (displayVaccinesAsOne == true)
+case: smallWidget (DISPLAY_VACCINES_AS_ONE == true)
 topRow:     | leftColumn |  rightColumn  |
             |            |   IMPFUNGEN   | 
             | icon       | Keine/Termine |
 
 bottomRow:  | Location                   |
 
-case: mediumWidget (displayVaccinesAsOne == false)
+case: mediumWidget (DISPLAY_VACCINES_AS_ONE == false)
 topRow:     | leftColumn |  rightColumn  | detailColumn |
             |            |   IMPFUNGEN   | BioNTech     |
             | icon       | Keine/Termine | Moderna...   |
 
 bottomRow:  | Location                                  |
+*/
+
+/*
+Create widget using current information
 */
 async function createWidget() {
 
@@ -131,7 +141,7 @@ async function createWidget() {
     let openAppointmentsText
     let textColor = textColorRed
     if (openAppointments.hasOwnProperty("error")) {
-        openAppointmentsText = openAppointments["error"]
+        openAppointmentsText = "⚠️ " + openAppointments["error"]
     }
     else if (Object.values(openAppointments).includes(true)) {
         openAppointmentsText = "Freie\nTermine"
@@ -146,17 +156,14 @@ async function createWidget() {
     openAppointmentsTextObj.textColor = textColor
     
 
-    if(!displayVaccinesAsOne) {
+    if(!DISPLAY_VACCINES_AS_ONE) {
         topRow.addSpacer(8)
 
         let detailColumn = topRow.addStack()
         detailColumn.layoutVertically()
         openAppointmentsDetail = {}
         Object.keys(openAppointments).forEach((key, index) => {
-            //openAppointmentsDetail[key] = detailColumn.addStack()
-            //openAppointmentsDetail[key].layoutVertically()
             openAppointmentsDetail[key] = detailColumn.addText(key)
-            //openAppointmentsDetail[key].addSpacer(1)
             openAppointmentsDetail[key].font = Font.mediumRoundedSystemFont(detailTextFontSize)
             if (openAppointments[key]) {
                 openAppointmentsDetail[key].textColor = textColorGreen 
@@ -171,7 +178,8 @@ async function createWidget() {
 
     const bottomRow = widget.addStack()
     bottomRow.layoutVertically()
-    let shortName = centerInformation["Zentrumsname"]
+    // Replacing long names with their abbrehivations 
+    let shortName = CENTER["Zentrumsname"]
     shortName = shortName.replace("Zentrales Impfzentrum", "ZIZ")
     shortName = shortName.replace("Zentrales Impfzentrum (ZIZ)", "ZIZ")
     shortName = shortName.replace("Landkreis", "LK")
@@ -180,20 +188,53 @@ async function createWidget() {
     shortName = shortName.replace("Impfzentrum Landkreis", "KIZ")
 
     
-    const street = bottomRow.addText(centerInformation["Zentrumsname"])
+    const street = bottomRow.addText(shortName)
     street.font = Font.regularSystemFont(11)
 
-    const zipCity = bottomRow.addText(centerInformation["Adresse"] + ", " + centerInformation["Ort"])
+    const zipCity = bottomRow.addText(CENTER["Adresse"] + ", " + CENTER["Ort"])
     zipCity.font = Font.regularSystemFont(11)
 }
 
+/*
+Create notification if turned on
+*/
+async function createNotification() {
+    if (NOTIFICATION_LEVEL > 0) {
+        const notify = new Notification();
+        notify.sound = "default";
+        notify.title = "ImpfWidget";
+        notify.openURL = CENTER["URL"];
+        if (Object.values(openAppointments).includes(true)) {
+            notify.body = "💉 Freie Termine"
+            notify.schedule();
+            return;
+        }
+        else if (openAppointments.hasOwnProperty("error")) {
+            notify.body = "⚠️ " + openAppointments["error"]
+            notify.schedule();
+            return;
+        }
+        else if (NOTIFICATION_LEVEL == 2) {
+            notify.body = "🦠 Keine Termine"
+            notify.schedule();
+            return;
+        }
+    }
+}
 
-// fetches the amount of toilet paper packages
+
+/* 
+Fetches open appointments
+Returns object e.g:
+   {"BioNTech": true, "Monderna": false}
+or {"Error": "Error message"}
+*/
 async function fetchOpenAppointments() {
-    let url = "https://003-iz.impfterminservice.de/rest/suche/termincheck?plz=" + PLZ + "&leistungsmerkmale=" 
+    let url = CENTER["URL"]  + "rest/suche/termincheck?plz=" + CENTER["PLZ"] + "&leistungsmerkmale=" 
     let result = {}
     console.log(VACCINES)
-    if (displayVaccinesAsOne) {
+    // Case if all vaccines are displayed as one
+    if (DISPLAY_VACCINES_AS_ONE) {
         let urlAppendix = []
         for (var i = 0; i < VACCINES.length; i++) {
             if (VACCINES[i]["allowed"]) {
@@ -222,6 +263,7 @@ async function fetchOpenAppointments() {
             }
         }
     }
+    // Case if all vaccines are displayed one by one
     else {
         for (var i = 0; i < VACCINES.length; i++) {
             if (VACCINES[i]["allowed"]) {
@@ -247,28 +289,6 @@ async function fetchOpenAppointments() {
     return result
 }
 
-
-// fetches information of all centers. 
-async function fetchCenterInformation() {
-    let url = 'https://003-iz.impfterminservice.de/assets/static/impfzentren.json'
-
-    let req = new Request(url)
-    let apiResult = await req.loadJSON()
-    apiResult = apiResult[bLeander[LANDID]]
-    for (var i in apiResult) {
-        if (apiResult[i]["PLZ"] == PLZ) {
-            //Set correct url.
-            //Will work without, but we don't want to break their load-balancing system
-            widget.url = apiResult[i]["URL"]
-          return apiResult[i]
-        }
-      }
-    //If no center with the plz was found, return this dummy/error object
-    widget.url = "https://www.impfterminservice.de/" 
-    return {"Zentrumsname": "Name",
-            "Ort": "City not found",
-            "Adresse": "Street"}
-}
 
 // get images from local filestore or download them once
 async function getImage(image) {
