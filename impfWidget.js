@@ -44,10 +44,8 @@ TLDR:
 | ✓ Private use    |                              |             |
 
 Go to https://github.com/not-a-feature/impfWidget/blob/main/LICENSE to see the full version.
--------------------------------------------------------------------------------
+------------------------------------------------------------------------------- */
 
-
-*/
 //-----------------------------------------------------------------------------
 // Settings
 
@@ -61,9 +59,8 @@ const CENTER = {
     "Adresse": "Europastraße  50"
  }
 
-// djust to your desired level
+// adjust to your desired level
 const NOTIFICATION_LEVEL = 1
-
 
 // Set to true, if a detailed view is wanted.
 // Attention! This requires a medium size-widget (2x1)
@@ -83,10 +80,6 @@ const detailTextFontSize = 17
 const textColorRed   = new Color("#E50000")
 const textColorGreen = new Color("#00CD66")
 
-let param = args.widgetParameter
-if (param != null && param.length > 0) {
-    PLZ = param
-}
 
 const widget = new ListWidget()
 widget.url = CENTER["URL"]
@@ -170,10 +163,7 @@ async function createWidget() {
         detailColumn.layoutVertically()
         openAppointmentsDetail = {}
         Object.keys(openAppointments).forEach((key, index) => {
-            //openAppointmentsDetail[key] = detailColumn.addStack()
-            //openAppointmentsDetail[key].layoutVertically()
             openAppointmentsDetail[key] = detailColumn.addText(key)
-            //openAppointmentsDetail[key].addSpacer(1)
             openAppointmentsDetail[key].font = Font.mediumRoundedSystemFont(detailTextFontSize)
             if (openAppointments[key]) {
                 openAppointmentsDetail[key].textColor = textColorGreen 
@@ -188,6 +178,7 @@ async function createWidget() {
 
     const bottomRow = widget.addStack()
     bottomRow.layoutVertically()
+    // Replacing long names with their abbrehivations 
     let shortName = CENTER["Zentrumsname"]
     shortName = shortName.replace("Zentrales Impfzentrum", "ZIZ")
     shortName = shortName.replace("Zentrales Impfzentrum (ZIZ)", "ZIZ")
@@ -228,7 +219,7 @@ async function createNotification() {
             notify.schedule();
             return;
         }
-      }
+    }
 }
 
 
