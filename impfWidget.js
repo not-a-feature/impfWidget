@@ -1,6 +1,6 @@
 /* 
 Impftermin Widget
-DEV from v1.2.3 to 1.3.0
+v 1.3.0
 
 This Scriptable Widget will show you if there are any "Vermittlungscode" for vaccination appointments available.
 The data is pulled from the impfterminservice.de api, which is neither publicly available nor documented.
