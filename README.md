@@ -2,7 +2,11 @@
 
 | freie Termine | keine Termine | Detailansicht  |
 | -----------------  | ------------------ | ------------------ |
-| <img src="https://user-images.githubusercontent.com/25013642/107362178-b5c50400-6ad8-11eb-998c-7ca27e34c47b.png" alt="Screenshot Freie Termine" width=200> | <img src="https://user-images.githubusercontent.com/25013642/107362185-b78ec780-6ad8-11eb-814d-ba9d099e7daf.jpg" alt="Screenshot keine freie Termine" width=200> | <img src="https://user-images.githubusercontent.com/25013642/107978719-91c45f80-6fbd-11eb-8983-17182a3e1afb.jpg" alt="Screenshot Detailansicht" width=400> |<
+| <img src="https://user-images.githubusercontent.com/25013642/107362178-b5c50400-6ad8-11eb-998c-7ca27e34c47b.png" alt="Screenshot Freie Termine" width=200> | <img src="https://user-images.githubusercontent.com/25013642/107362185-b78ec780-6ad8-11eb-814d-ba9d099e7daf.jpg" alt="Screenshot keine freie Termine" width=200> | <img src="https://user-images.githubusercontent.com/25013642/107978719-91c45f80-6fbd-11eb-8983-17182a3e1afb.jpg" alt="Screenshot Detailansicht" width=400> |
+
+| Benachrichtigung freie Termine | keine Termine |
+| ----------------- | ----------------- |
+| <img src="https://user-images.githubusercontent.com/25013642/109874176-0e6a6580-7c6f-11eb-9d5a-935ca968c9b1.png" alt="Screenshot Benachrichtigung2" width=400> | <img src="https://user-images.githubusercontent.com/25013642/109873815-9439e100-7c6e-11eb-8051-398781047a70.png" alt="Screenshot Benachrichtigung" width=400> |
 
 
 ## Allgemeines
@@ -17,7 +21,7 @@ Die gist Version des Repos findet sich hier: https://gist.github.com/not-a-featu
 ## Anforderungen und Installation
 - iOS 14
 - [Scriptable](https://apps.apple.com/us/app/scriptable/id1405459188) version 1.5 (oder neuer)
-- Internetverindung 
+- Internetverbindung 
 
 ### Installation
 1) Kopiere den Source code von oben (klick vorher auf "raw" oben rechts)
@@ -26,7 +30,7 @@ Die gist Version des Repos findet sich hier: https://gist.github.com/not-a-featu
 4) Öffne https://003-iz.impfterminservice.de/assets/static/impfzentren.json
 5) Suche nach dem Zentrum in der gewünschen Stadt
 6) Kopiere die das ganze Objekt (alles zwischen den geschweiften klammern)
-![screenshot1](https://user-images.githubusercontent.com/25013642/107360811-bceb1280-6ad6-11eb-982d-eca27be29812.png)
+![screenshot1](https://user-images.githubusercontent.com/25013642/109874502-7caf2800-7c6f-11eb-97c6-9198b7b1be4d.png)
 
 7) Gehe zurück in die Scriptable App und den code an. Ersetzte alles zwischen den geschweiften Klammern mit dem kopiertem Text
 ~~~js
