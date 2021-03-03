@@ -2,11 +2,11 @@
 Impftermin Widget
 DEV from v1.2.3 to 1.3.0
 
-This Scriptable Widget will show you if there are any vaccination appointments available in your local vaccination centre.
+This Scriptable Widget will show you if there are any "Vermittlungscode" for vaccination appointments available.
 The data is pulled from the impfterminservice.de api, which is neither publicly available nor documented.
 Therefore everything may break.
 
-The newest version of this widget can be found here: https://github.com/not-a-feature/impfWidget
+The newest version, issues, etc. of this widget can be found here: https://github.com/not-a-feature/impfWidget
 A gist version is also available: https://gist.github.com/not-a-feature/4e6dbbd9eb3bd927e50cae347b7e0486/
 
 The framework/skeleton of this script was created by marco79cgn for the toiletpaper-widget
