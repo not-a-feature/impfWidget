@@ -62,9 +62,9 @@ const CENTER = {
 // adjust to your desired level
 const NOTIFICATION_LEVEL = 1
 
-// Set to true, if a detailed view is wanted.
+// Set to false, if a detailed view is wanted.
 // Attention! This requires a medium size-widget (2x1)
-const DISPLAY_VACCINES_AS_ONE = false 
+const DISPLAY_VACCINES_AS_ONE = true 
 
 // Advanced Setting
 // Fetch status of following vaccines, set to false to ignore this vaccine
