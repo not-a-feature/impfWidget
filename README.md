@@ -1,5 +1,7 @@
 # impfWidget
 
+EOL des Projektes am 09.03.2021
+
 | freie Termine | keine Termine | Detailansicht  |
 | -----------------  | ------------------ | ------------------ |
 | <img src="https://user-images.githubusercontent.com/25013642/107362178-b5c50400-6ad8-11eb-998c-7ca27e34c47b.png" alt="Screenshot Freie Termine" width=200> | <img src="https://user-images.githubusercontent.com/25013642/107362185-b78ec780-6ad8-11eb-814d-ba9d099e7daf.jpg" alt="Screenshot keine freie Termine" width=200> | <img src="https://user-images.githubusercontent.com/25013642/107978719-91c45f80-6fbd-11eb-8983-17182a3e1afb.jpg" alt="Screenshot Detailansicht" width=400> |
