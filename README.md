@@ -76,6 +76,7 @@ Großer Dank an @marco79cgn für die Klopapier-App
 Es handelt sich um ein von mir selbst entwickeltes Spaßprojekt, es ist weder ein offizielles Produkt noch steht es im Zusammenhang mit der 116/117 oder impfterminservice.de. 
 
 ## Changelog
+- v 1.3.1 EOL des Projektes
 - v 1.3.0 introducing Notifications 
 - v 1.2.3 changing api to subdomain
 - v 1.2.2 changing licence url & comment
