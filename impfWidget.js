@@ -1,5 +1,6 @@
 /* 
 Impftermin Widget
+v 1.4.0 Workaround durch JavaScript eval innerhalb eines WebViews
 v 1.3.1 EOL des Projektes
 
 This Scriptable Widget will show you if there are any "Vermittlungscode" for vaccination appointments available.
@@ -82,7 +83,7 @@ const textColorGreen = new Color("#00CD66")
 
 
 const widget = new ListWidget()
-widget.url = CENTER["URL"]
+widget.url = CENTER["URL"] + "/impftermine/service?plz=" + CENTER["PLZ"];
 const openAppointments  = await fetchOpenAppointments()
 await createNotification()
 await createWidget()
@@ -141,7 +142,12 @@ async function createWidget() {
     let openAppointmentsText
     let textColor = textColorRed
     if (openAppointments.hasOwnProperty("error")) {
-        openAppointmentsText = "⚠️ " + openAppointments["error"]
+
+        if ( Object.keys(openAppointments.error).length == 0) {
+            openAppointmentsText = "⚠️ Keine Antwort " + openAppointments["error"]
+        } else {
+            openAppointmentsText = "⚠️ " + openAppointments["error"]
+        }
     }
     else if (Object.values(openAppointments).includes(true)) {
         openAppointmentsText = "Freie\nTermine"
@@ -205,12 +211,12 @@ async function createNotification() {
         notify.title = "ImpfWidget";
         notify.openURL = CENTER["URL"];
         if (Object.values(openAppointments).includes(true)) {
-            notify.body = "💉 Freie Termine"
+            notify.body = "💉 Freie Termine - " + CENTER["Ort"];
             notify.schedule();
             return;
         }
-        else if (openAppointments.hasOwnProperty("error")) {
-            notify.body = "⚠️ " + openAppointments["error"]
+        else if (openAppointments.hasOwnProperty("error") && NOTIFICATION_LEVEL == 2) {
+            notify.body = "⚠️ Keine Antwort " + openAppointments["error"]
             notify.schedule();
             return;
         }
@@ -230,6 +236,7 @@ Returns object e.g:
 or {"Error": "Error message"}
 */
 async function fetchOpenAppointments() {
+    let landingUrl = CENTER["URL"] + "/impftermine/service?plz=" + CENTER["PLZ"];
     let url = CENTER["URL"]  + "rest/suche/termincheck?plz=" + CENTER["PLZ"] + "&leistungsmerkmale=" 
     let result = {}
     console.log(VACCINES)
@@ -245,21 +252,24 @@ async function fetchOpenAppointments() {
             return {"error": "No vaccines selected."}
         }
         url = url + urlAppendix.join(",")
-        let req = new Request(url)
-        let body = await req.loadString()
+
+        let body = await webViewRequest(landingUrl, url)
+
+        console.log(body)
+        if (Object.keys(body).length === 0) {
+          await debugNotify("Empty Body")
+          body = await webViewRequest(landingUrl, url)
+        }
 
         for (var i = 0; i < VACCINES.length; i++) {
-            if (body == '{"termineVorhanden":false}') {
+            if (!body["termineVorhanden"] && !body.error) {
                 result[VACCINES[i]["name"]] = false
             }
-            else if (body == '{"termineVorhanden":true}') {
+            else if (body["termineVorhanden"]) {
                 result[VACCINES[i]["name"]] = true
             }
-            else if (body == '{"error":"Postleitzahl ungueltig"}') {
-                return {"error": "Wrong PLZ"}
-            }
             else {
-                return {"error": "Error"}
+                return {"error": body.msg}
             }
         }
     }
@@ -270,22 +280,19 @@ async function fetchOpenAppointments() {
                 console.log("Checking Vaccine: " + VACCINES[i]["name"])
                 let req = new Request(url + VACCINES[i]["ID"])
                 let body = await req.loadString()
-                if (body == '{"termineVorhanden":false}') {
+
+                if (!body["termineVorhanden"] && !body.error) {
                     result[VACCINES[i]["name"]] = false
                 }
-                else if (body == '{"termineVorhanden":true}') {
+                else if (body["termineVorhanden"]) {
                     result[VACCINES[i]["name"]] = true
                 }
-                else if (body == '{"error":"Postleitzahl ungueltig"}') {
-                    return {"error": "Wrong PLZ"}
-                }
                 else {
-                    return {"error": "Error"}
+                    return {"error": body.msg}
                 }
             }
         }
     }
-    console.log(result)
     return result
 }
 
@@ -317,4 +324,48 @@ async function getImage(image) {
 async function loadImage(imgUrl) {
     const req = new Request(imgUrl)
     return await req.loadImage()
+}
+
+async function webViewRequest(landingUrl, requestUrl) {
+
+  let evalJS = `
+      let request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let jsonResponse = JSON.parse(this.responseText);
+
+          completion(jsonResponse)
+        }
+        else if (this.readyState == 4 && this.status != 200) {
+          console.log("Error", this.status);
+          completion(
+             {"error": true,
+              "msg": this.responseText}
+          );
+        }
+
+      }
+
+      request.open("GET", "${requestUrl}");
+      request.send();
+
+    `
+  const web = new WebView();
+  await web.loadURL(landingUrl)
+  await web.waitForLoad();
+  const result = await web.evaluateJavaScript(evalJS, true);
+  await debugNotify("Eval result: " + JSON.stringify(result));
+
+  return result;
+}
+
+async function debugNotify(message) {
+    if (NOTIFICATION_LEVEL < 2)
+      return;
+  
+    const notify = new Notification();
+    notify.sound = "default";
+    notify.title = "ImpfWidget";
+    notify.body = message;
+    notify.schedule();
 }
