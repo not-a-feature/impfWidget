@@ -1,5 +1,8 @@
 # impfWidget
 
+20.06.2021 - Workaround durch JavaScript eval innerhalb eines WebViews
+Das Impf Widget zeigt nun wieder Ergebnisse an. Es bekommt zeitweise keine Antwort, ist aber überwiegend stabil.
+
 EOL des Projektes am 09.03.2021
 
 | freie Termine | keine Termine | Detailansicht  |
