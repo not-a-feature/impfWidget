@@ -58,46 +58,46 @@ const CENTER = {
     "Bundesland": "Baden-Württemberg",
     "URL": "https://003-iz.impfterminservice.de/",
     "Adresse": "Europastraße  50"
- }
+ };
 
 // adjust to your desired level
-const NOTIFICATION_LEVEL = 1
+const NOTIFICATION_LEVEL = 1;
 
 // Set to false, if a detailed view is wanted.
 // Attention! This requires a medium size-widget (2x1)
-const DISPLAY_VACCINES_AS_ONE = true 
+const DISPLAY_VACCINES_AS_ONE = true;
 
 // Advanced Setting
 // Fetch status of following vaccines, set to false to ignore this vaccine
 const VACCINES = [{"name": "BioNTech",    "ID": "L920", "allowed": true},
                   {"name": "Moderna",     "ID": "L921", "allowed": true},
-                  {"name": "AstraZeneca", "ID": "L922", "allowed": true}]
+                  {"name": "AstraZeneca", "ID": "L922", "allowed": true}];
 
 // END Setting
 //-----------------------------------------------------------------------------
-const vaccineTextFontSize = 13
-const appointmentsTextFontSize = 22
-const detailTextFontSize = 17
-const textColorRed   = new Color("#E50000")
-const textColorGreen = new Color("#00CD66")
+const vaccineTextFontSize = 13;
+const appointmentsTextFontSize = 22;
+const detailTextFontSize = 17;
+const textColorRed   = new Color("#E50000");
+const textColorGreen = new Color("#00CD66");
 
 
-const widget = new ListWidget()
+const widget = new ListWidget();
 widget.url = CENTER["URL"] + "/impftermine/service?plz=" + CENTER["PLZ"];
-const openAppointments  = await fetchOpenAppointments()
-await createNotification()
-await createWidget()
+const openAppointments  = await fetchOpenAppointments();
+await createNotification();
+await createWidget();
 
 if (!config.runsInWidget) {
     if (DISPLAY_VACCINES_AS_ONE) {
-        await widget.presentSmall()
+        await widget.presentSmall();
     }
     else {
-        await widget.presentMedium()
+        await widget.presentMedium();
     }
 }
-Script.setWidget(widget)
-Script.complete()
+Script.setWidget(widget);
+Script.complete();
 
 /* create Widget
 
@@ -121,84 +121,84 @@ Create widget using current information
 */
 async function createWidget() {
 
-    widget.setPadding(10, 10, 10, 10)
-    const icon = await getImage('vaccine')
-    let topRow = widget.addStack()
-    topRow.layoutHorizontally()
+    widget.setPadding(10, 10, 10, 10);
+    const icon = await getImage('vaccine');
+    let topRow = widget.addStack();
+    topRow.layoutHorizontally();
 
-    let leftColumn = topRow.addStack()
-    leftColumn.layoutVertically()
-    leftColumn.addSpacer(vaccineTextFontSize)
-    const iconImg = leftColumn.addImage(icon)
-    iconImg.imageSize = new Size(40, 40)
+    let leftColumn = topRow.addStack();
+    leftColumn.layoutVertically();
+    leftColumn.addSpacer(vaccineTextFontSize);
+    const iconImg = leftColumn.addImage(icon);
+    iconImg.imageSize = new Size(40, 40);
 
-    topRow.addSpacer(vaccineTextFontSize)
+    topRow.addSpacer(vaccineTextFontSize);
 
-    let rightColumn = topRow.addStack()
-    rightColumn.layoutVertically()
-    const vaccineText = rightColumn.addText("IMPFUNGEN")
-    vaccineText.font = Font.mediumRoundedSystemFont(vaccineTextFontSize)
+    let rightColumn = topRow.addStack();
+    rightColumn.layoutVertically();
+    const vaccineText = rightColumn.addText("IMPFUNGEN");
+    vaccineText.font = Font.mediumRoundedSystemFont(vaccineTextFontSize);
 
-    let openAppointmentsText
-    let textColor = textColorRed
+    let openAppointmentsText;
+    let textColor = textColorRed;
     if (openAppointments.hasOwnProperty("error")) {
 
-        if ( Object.keys(openAppointments.error).length == 0) {
-            openAppointmentsText = "⚠️ Keine Antwort " + openAppointments["error"]
+        if (Object.keys(openAppointments.error).length == 0) {
+            openAppointmentsText = "⚠️ Keine Antwort " + openAppointments["error"];
         } else {
-            openAppointmentsText = "⚠️ " + openAppointments["error"]
+            openAppointmentsText = "⚠️ " + openAppointments["error"];
         }
     }
     else if (Object.values(openAppointments).includes(true)) {
-        openAppointmentsText = "Freie\nTermine"
-        textColor = textColorGreen
+        openAppointmentsText = "Freie\nTermine";
+        textColor = textColorGreen;
     }
     else {
-        openAppointmentsText = "Keine\nTermine"
+        openAppointmentsText = "Keine\nTermine";
     }
-    let openAppointmentsTextObj = rightColumn.addText(openAppointmentsText)
+    let openAppointmentsTextObj = rightColumn.addText(openAppointmentsText);
 
-    openAppointmentsTextObj.font = Font.mediumRoundedSystemFont(appointmentsTextFontSize)
-    openAppointmentsTextObj.textColor = textColor
+    openAppointmentsTextObj.font = Font.mediumRoundedSystemFont(appointmentsTextFontSize);
+    openAppointmentsTextObj.textColor = textColor;
     
 
     if(!DISPLAY_VACCINES_AS_ONE) {
-        topRow.addSpacer(8)
+        topRow.addSpacer(8);
 
         let detailColumn = topRow.addStack()
-        detailColumn.layoutVertically()
+        detailColumn.layoutVertically();
         openAppointmentsDetail = {}
         Object.keys(openAppointments).forEach((key, index) => {
-            openAppointmentsDetail[key] = detailColumn.addText(key)
-            openAppointmentsDetail[key].font = Font.mediumRoundedSystemFont(detailTextFontSize)
+            openAppointmentsDetail[key] = detailColumn.addText(key);
+            openAppointmentsDetail[key].font = Font.mediumRoundedSystemFont(detailTextFontSize);
             if (openAppointments[key]) {
-                openAppointmentsDetail[key].textColor = textColorGreen 
+                openAppointmentsDetail[key].textColor = textColorGreen;
             }
             else {
-                openAppointmentsDetail[key].textColor = textColorRed 
+                openAppointmentsDetail[key].textColor = textColorRed;
             }
         })
     }
 
-    widget.addSpacer(4)
+    widget.addSpacer(4);
 
-    const bottomRow = widget.addStack()
-    bottomRow.layoutVertically()
+    const bottomRow = widget.addStack();
+    bottomRow.layoutVertically()vvvv;
     // Replacing long names with their abbrehivations 
-    let shortName = CENTER["Zentrumsname"]
-    shortName = shortName.replace("Zentrales Impfzentrum", "ZIZ")
-    shortName = shortName.replace("Zentrales Impfzentrum (ZIZ)", "ZIZ")
-    shortName = shortName.replace("Landkreis", "LK")
-    shortName = shortName.replace("Kreisimpfzentrum", "KIZ")
-    shortName = shortName.replace("Impfzentrum Kreis", "KIZ")
-    shortName = shortName.replace("Impfzentrum Landkreis", "KIZ")
+    let shortName = CENTER["Zentrumsname"];
+    shortName = shortName.replace("Zentrales Impfzentrum", "ZIZ");
+    shortName = shortName.replace("Zentrales Impfzentrum (ZIZ)", "ZIZ");
+    shortName = shortName.replace("Landkreis", "LK");
+    shortName = shortName.replace("Kreisimpfzentrum", "KIZ");
+    shortName = shortName.replace("Impfzentrum Kreis", "KIZ");
+    shortName = shortName.replace("Impfzentrum Landkreis", "KIZ");
 
     
-    const street = bottomRow.addText(shortName)
-    street.font = Font.regularSystemFont(11)
+    const street = bottomRow.addText(shortName);
+    street.font = Font.regularSystemFont(11);
 
-    const zipCity = bottomRow.addText(CENTER["Adresse"] + ", " + CENTER["Ort"])
-    zipCity.font = Font.regularSystemFont(11)
+    const zipCity = bottomRow.addText(CENTER["Adresse"] + ", " + CENTER["Ort"]);
+    zipCity.font = Font.regularSystemFont(11);
 }
 
 /*
@@ -216,12 +216,12 @@ async function createNotification() {
             return;
         }
         else if (openAppointments.hasOwnProperty("error") && NOTIFICATION_LEVEL == 2) {
-            notify.body = "⚠️ Keine Antwort " + openAppointments["error"]
+            notify.body = "⚠️ Keine Antwort " + openAppointments["error"];
             notify.schedule();
             return;
         }
         else if (NOTIFICATION_LEVEL == 2) {
-            notify.body = "🦠 Keine Termine"
+            notify.body = "🦠 Keine Termine";
             notify.schedule();
             return;
         }
@@ -237,39 +237,39 @@ or {"Error": "Error message"}
 */
 async function fetchOpenAppointments() {
     let landingUrl = CENTER["URL"] + "/impftermine/service?plz=" + CENTER["PLZ"];
-    let url = CENTER["URL"]  + "rest/suche/termincheck?plz=" + CENTER["PLZ"] + "&leistungsmerkmale=" 
-    let result = {}
-    console.log(VACCINES)
+    let url = CENTER["URL"]  + "rest/suche/termincheck?plz=" + CENTER["PLZ"] + "&leistungsmerkmale=";
+    let result = {};
+    console.log(VACCINES);
     // Case if all vaccines are displayed as one
     if (DISPLAY_VACCINES_AS_ONE) {
-        let urlAppendix = []
+        let urlAppendix = [];
         for (var i = 0; i < VACCINES.length; i++) {
             if (VACCINES[i]["allowed"]) {
-                urlAppendix.push(VACCINES[i]["ID"])
+                urlAppendix.push(VACCINES[i]["ID"]);
             }
         }
         if (urlAppendix == []) {
-            return {"error": "No vaccines selected."}
+            return {"error": "No vaccines selected."};
         }
         url = url + urlAppendix.join(",")
 
-        let body = await webViewRequest(landingUrl, url)
+        let body = await webViewRequest(landingUrl, url);
 
-        console.log(body)
+        console.log(body);
         if (Object.keys(body).length === 0) {
-          await debugNotify("Empty Body")
-          body = await webViewRequest(landingUrl, url)
+          await debugNotify("Empty Body");
+          body = await webViewRequest(landingUrl, url);
         }
 
         for (var i = 0; i < VACCINES.length; i++) {
             if (!body["termineVorhanden"] && !body.error) {
-                result[VACCINES[i]["name"]] = false
+                result[VACCINES[i]["name"]] = false;
             }
             else if (body["termineVorhanden"]) {
-                result[VACCINES[i]["name"]] = true
+                result[VACCINES[i]["name"]] = true;
             }
             else {
-                return {"error": body.msg}
+                return {"error": body.msg};
             }
         }
     }
@@ -277,53 +277,53 @@ async function fetchOpenAppointments() {
     else {
         for (var i = 0; i < VACCINES.length; i++) {
             if (VACCINES[i]["allowed"]) {
-                console.log("Checking Vaccine: " + VACCINES[i]["name"])
-                let req = new Request(url + VACCINES[i]["ID"])
-                let body = await req.loadString()
+                console.log("Checking Vaccine: " + VACCINES[i]["name"]);
+                let req = new Request(url + VACCINES[i]["ID"]);
+                let body = await req.loadString();
 
                 if (!body["termineVorhanden"] && !body.error) {
-                    result[VACCINES[i]["name"]] = false
+                    result[VACCINES[i]["name"]] = false;
                 }
                 else if (body["termineVorhanden"]) {
-                    result[VACCINES[i]["name"]] = true
+                    result[VACCINES[i]["name"]] = true;
                 }
                 else {
-                    return {"error": body.msg}
+                    return {"error": body.msg};
                 }
             }
         }
     }
-    return result
+    return result;
 }
 
 
 // get images from local filestore or download them once
 async function getImage(image) {
-    let fm = FileManager.local()
-    let dir = fm.documentsDirectory()
-    let path = fm.joinPath(dir, image)
+    let fm = FileManager.local();
+    let dir = fm.documentsDirectory();
+    let path = fm.joinPath(dir, image);
     if (fm.fileExists(path)) {
-        return fm.readImage(path)
+        return fm.readImage(path);
     } else {
         // download once, save in local storage
-        let imageUrl
+        let imageUrl;
         switch (image) {
             case 'vaccine':
-                imageUrl = "https://api.juleskreuer.eu/syringe-solid.png"
-                break
+                imageUrl = "https://api.juleskreuer.eu/syringe-solid.png";
+                break;
             default:
                 console.log(`Sorry, couldn't find ${image}.`);
         }
-        let iconImage = await loadImage(imageUrl)
-        fm.writeImage(path, iconImage)
-        return iconImage
+        let iconImage = await loadImage(imageUrl);
+        fm.writeImage(path, iconImage);
+        return iconImage;
     }
 }
 
 // helper function to download an image from a given url
 async function loadImage(imgUrl) {
-    const req = new Request(imgUrl)
-    return await req.loadImage()
+    const req = new Request(imgUrl);
+    return await req.loadImage();
 }
 
 async function webViewRequest(landingUrl, requestUrl) {
@@ -349,9 +349,9 @@ async function webViewRequest(landingUrl, requestUrl) {
       request.open("GET", "${requestUrl}");
       request.send();
 
-    `
+    `;
   const web = new WebView();
-  await web.loadURL(landingUrl)
+  await web.loadURL(landingUrl);
   await web.waitForLoad();
   const result = await web.evaluateJavaScript(evalJS, true);
   await debugNotify("Eval result: " + JSON.stringify(result));
