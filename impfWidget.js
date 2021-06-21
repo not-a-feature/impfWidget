@@ -86,7 +86,7 @@ const textColorGreen = new Color("#00CD66");
 
 
 const widget = new ListWidget();
-widget.url = CENTER["URL"] + "/impftermine/service?plz=" + CENTER["PLZ"];
+widget.url = CENTER["URL"] + "impftermine/service?plz=" + CENTER["PLZ"];
 const openAppointments  = await fetchOpenAppointments();
 await createNotification();
 await createWidget();
@@ -153,16 +153,19 @@ async function createWidget() {
         }
     }
     else if (Object.values(openAppointments).includes(true)) {
-        openAppointmentsText = "Freie\nTermine";
+        openAppointmentsText = "Freie";
         textColor = textColorGreen;
     }
     else {
-        openAppointmentsText = "Keine\nTermine";
+        openAppointmentsText = "Keine";
     }
     let openAppointmentsTextObj = rightColumn.addText(openAppointmentsText);
+    let generalAppointmentsTextObj = rightColumn.addText("Termine");
 
     openAppointmentsTextObj.font = Font.mediumRoundedSystemFont(appointmentsTextFontSize);
     openAppointmentsTextObj.textColor = textColor;
+    generalAppointmentsTextObj.font = Font.mediumRoundedSystemFont(appointmentsTextFontSize);
+    generalAppointmentsTextObj.textColor = textColor;
     
 
     if(!DISPLAY_VACCINES_AS_ONE) {
