@@ -3,7 +3,6 @@
 20.06.2021 - Workaround durch JavaScript eval innerhalb eines WebViews
 Das Impf Widget zeigt nun wieder Ergebnisse an. Es bekommt zeitweise keine Antwort, ist aber überwiegend stabil.
 
-EOL des Projektes am 09.03.2021
 
 | freie Termine | keine Termine | Detailansicht  |
 | -----------------  | ------------------ | ------------------ |
@@ -79,7 +78,7 @@ Großer Dank an @marco79cgn für die Klopapier-App
 Es handelt sich um ein von mir selbst entwickeltes Spaßprojekt, es ist weder ein offizielles Produkt noch steht es im Zusammenhang mit der 116/117 oder impfterminservice.de. 
 
 ## Changelog
-- v 1.3.1 EOL des Projektes
+- v 1.4.1 BotProtection Workaround and update to new vaccines.
 - v 1.3.0 introducing Notifications 
 - v 1.2.3 changing api to subdomain
 - v 1.2.2 changing licence url & comment

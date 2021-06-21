@@ -1,14 +1,12 @@
 /* 
 Impftermin Widget
-v 1.4.0 Workaround durch JavaScript eval innerhalb eines WebViews
-v 1.3.1 EOL des Projektes
+v 1.4.1 Workaround durch JavaScript eval innerhalb eines WebViews (Thanks to @Redna)
 
 This Scriptable Widget will show you if there are any "Vermittlungscode" for vaccination appointments available.
 The data is pulled from the impfterminservice.de api, which is neither publicly available nor documented.
 Therefore everything may break.
 
 The newest version, issues, etc. of this widget can be found here: https://github.com/not-a-feature/impfWidget
-A gist version is also available: https://gist.github.com/not-a-feature/4e6dbbd9eb3bd927e50cae347b7e0486/
 
 The framework/skeleton of this script was created by marco79cgn for the toiletpaper-widget
 (https://gist.github.com/marco79cgn/23ce08fd8711ee893a3be12d4543f2d2)
@@ -30,6 +28,9 @@ Thats it. You can now run this script.
 Copy the source, open the scriptabel app, add the source there. 
 go the home screen, add scriptable widget
 
+Aknowlodgements:
+- @Redna, for providing a workaround to bypass the botprotection.
+
 -------------------------------------------------------------------------------
 LICENSE:
 Copyright (C) 2021 by Jules Kreuer - @not_a_feature
@@ -45,7 +46,8 @@ TLDR:
 | ✓ Private use    |                              |             |
 
 Go to https://github.com/not-a-feature/impfWidget/blob/main/LICENSE to see the full version.
-------------------------------------------------------------------------------- */
+------------------------------------------------------------------------------- 
+*/
 
 //-----------------------------------------------------------------------------
 // Settings
@@ -70,8 +72,9 @@ const DISPLAY_VACCINES_AS_ONE = true;
 // Advanced Setting
 // Fetch status of following vaccines, set to false to ignore this vaccine
 const VACCINES = [{"name": "BioNTech",    "ID": "L920", "allowed": true},
-                  {"name": "Moderna",     "ID": "L921", "allowed": true},
-                  {"name": "AstraZeneca", "ID": "L922", "allowed": true}];
+                  {"name": "mRNA",        "ID": "L921", "allowed": true},
+                  {"name": "AstraZeneca", "ID": "L922", "allowed": true},
+                  {"name": "J&J",         "ID": "L923", "allowed": true}];
 
 // END Setting
 //-----------------------------------------------------------------------------
@@ -183,15 +186,15 @@ async function createWidget() {
     widget.addSpacer(4);
 
     const bottomRow = widget.addStack();
-    bottomRow.layoutVertically()vvvv;
+    bottomRow.layoutVertically();
     // Replacing long names with their abbrehivations 
     let shortName = CENTER["Zentrumsname"];
-    shortName = shortName.replace("Zentrales Impfzentrum", "ZIZ");
     shortName = shortName.replace("Zentrales Impfzentrum (ZIZ)", "ZIZ");
+    shortName = shortName.replace("Zentrales Impfzentrum", "ZIZ");
+    shortName = shortName.replace("Impfzentrum Landkreis", "KIZ");
     shortName = shortName.replace("Landkreis", "LK");
     shortName = shortName.replace("Kreisimpfzentrum", "KIZ");
     shortName = shortName.replace("Impfzentrum Kreis", "KIZ");
-    shortName = shortName.replace("Impfzentrum Landkreis", "KIZ");
 
     
     const street = bottomRow.addText(shortName);
